@@ -1,4 +1,4 @@
-# CLAUDE.md
+# Flarum Webhook
 
 This file provides guidance to developers when working with code in this repository.
 
