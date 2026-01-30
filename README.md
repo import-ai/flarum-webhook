@@ -4,7 +4,7 @@ This file provides guidance to developers when working with code in this reposit
 
 ## Overview
 
-This is a Flarum extension (`import-ai/flarum-webhook`) that triggers HTTP webhooks when users create new posts. It sends POST requests with JSON payloads containing post data.
+This is a Flarum extension (`import-ai/flarum-webhook`) that triggers HTTP webhooks when users create or edit posts. It sends POST requests with JSON payloads containing full model data.
 
 ## Development Commands
 
@@ -22,8 +22,10 @@ npm run build        # Production build
 ### Backend (PHP)
 
 - **Namespace**: `ImportAI\Webhook`
-- **Entry point**: `extend.php` - Registers extenders for admin frontend, locales, event listener, and settings
-- **Event listener**: `src/Listener/PostCreatedListener.php` - Listens to `Flarum\Post\Event\Posted` and sends webhook requests via cURL
+- **Entry point**: `extend.php` - Registers extenders for admin frontend, locales, event listeners, and settings
+- **Event listeners**:
+  - `src/Listener/PostCreatedListener.php` - Listens to `Flarum\Post\Event\Posted` for new posts
+  - `src/Listener/PostRevisedListener.php` - Listens to `Flarum\Post\Event\Revised` for post edits
 
 ### Frontend (JavaScript)
 
@@ -35,14 +37,21 @@ npm run build        # Production build
 
 ### Webhook Payload
 
+The webhook sends a JSON payload with full model data:
+
 ```json
 {
-  "username": "string",
-  "create_time": "ISO8601 timestamp",
-  "markdown": "post content",
-  "title": "discussion title (only for first post)"
+  "event": "post.created | post.revised",
+  "user": { /* full user model attributes */ },
+  "post": { /* full post model attributes */ },
+  "discussion": { /* full discussion model attributes */ },
+  "actor": { /* full actor model attributes (user who triggered the event) */ }
 }
 ```
+
+**Event Types**:
+- `post.created` - Triggered when a new post is created
+- `post.revised` - Triggered when an existing post is edited
 
 ### Localization
 
