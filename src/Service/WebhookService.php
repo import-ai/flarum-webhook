@@ -26,14 +26,27 @@ class WebhookService
         return empty($url) ? null : $url;
     }
 
+    public function getBearerToken(): ?string
+    {
+        $token = $this->settings->get('import-ai-webhook.bearer_token');
+        return empty($token) ? null : $token;
+    }
+
     public function send(string $url, array $payload): void
     {
+        $headers = [
+            'Content-Type' => 'application/json',
+        ];
+
+        $bearerToken = $this->getBearerToken();
+        if ($bearerToken !== null) {
+            $headers['Authorization'] = 'Bearer ' . $bearerToken;
+        }
+
         try {
             $response = $this->client->post($url, [
                 'json' => $payload,
-                'headers' => [
-                    'Content-Type' => 'application/json',
-                ],
+                'headers' => $headers,
             ]);
 
             $statusCode = $response->getStatusCode();
