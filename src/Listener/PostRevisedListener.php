@@ -2,12 +2,11 @@
 
 namespace ImportAI\Webhook\Listener;
 
-use Flarum\Post\Event\Posted;
+use Flarum\Post\Event\Revised;
 use Flarum\Settings\SettingsRepositoryInterface;
-use Illuminate\Contracts\Queue\Queue;
 use Psr\Log\LoggerInterface;
 
-class PostCreatedListener
+class PostRevisedListener
 {
     protected SettingsRepositoryInterface $settings;
     protected LoggerInterface $logger;
@@ -18,7 +17,7 @@ class PostCreatedListener
         $this->logger = $logger;
     }
 
-    public function handle(Posted $event): void
+    public function handle(Revised $event): void
     {
         $webhookUrl = $this->settings->get('import-ai-webhook.webhook_url');
 
@@ -33,7 +32,7 @@ class PostCreatedListener
 
         // Build the payload with full model attributes (includes extension fields)
         $payload = [
-            'event' => 'post.created',
+            'event' => 'post.revised',
             'user' => $user ? $user->toArray() : null,
             'post' => $post->toArray(),
             'discussion' => $discussion->toArray(),
