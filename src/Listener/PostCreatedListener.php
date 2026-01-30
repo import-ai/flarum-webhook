@@ -30,17 +30,12 @@ class PostCreatedListener
         $user = $post->user;
         $discussion = $post->discussion;
 
-        // Build the payload
+        // Build the payload with full model attributes (includes extension fields)
         $payload = [
-            'username' => $user ? $user->username : 'anonymous',
-            'create_time' => $post->created_at->toIso8601String(),
-            'markdown' => $post->content,
+            'user' => $user ? $user->toArray() : null,
+            'post' => $post->toArray(),
+            'discussion' => $discussion->toArray(),
         ];
-
-        // Only include title for the first post in a discussion
-        if ($post->number === 1) {
-            $payload['title'] = $discussion->title;
-        }
 
         $this->sendWebhook($webhookUrl, $payload);
     }
