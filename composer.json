@@ -1,5 +1,6 @@
 {
     "name": "import-ai/flarum-webhook",
+    "version": "0.1.1",
     "description": "Trigger webhooks when users create new posts",
     "keywords": [
         "flarum"
@@ -10,7 +11,8 @@
         "source": "https://github.com/import-ai/flarum-webhook"
     },
     "require": {
-        "flarum/core": "^1.2.0"
+        "flarum/core": "^1.2.0",
+        "guzzlehttp/guzzle": "^7.0"
     },
     "authors": [
         {
@@ -26,7 +28,7 @@
     },
     "extra": {
         "flarum-extension": {
-            "title": "Post Webhook",
+            "title": "Flarum Webhook",
             "category": "feature",
             "icon": {
                 "name": "fas fa-paper-plane",
