@@ -4,4 +4,4 @@ import-ai-webhook:
       webhook_url_label: Webhook URL
       webhook_url_help: 输入接收 POST 请求的 URL，当用户创建或编辑帖子时会触发。请求体包含事件类型，以及完整的用户、帖子、讨论和操作者模型数据。
       bearer_token_label: Bearer 令牌
-      bearer_token_help: "可选的 Bearer 令牌，用于 Authorization 请求头。令牌将作为 Authorization: Bearer {token} 随每次 webhook 请求一起发送。"
+      bearer_token_help: "可选的 Bearer 令牌，用于 Authorization 请求头。令牌将作为 'Authorization: Bearer <your-token>' 随每次 webhook 请求一起发送。"
