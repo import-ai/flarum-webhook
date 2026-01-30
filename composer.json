@@ -1,0 +1,36 @@
+{
+    "name": "import-ai/flarum-webhook",
+    "description": "Trigger webhooks when users create new posts",
+    "keywords": [
+        "flarum"
+    ],
+    "type": "flarum-extension",
+    "license": "MIT",
+    "require": {
+        "flarum/core": "^1.2.0"
+    },
+    "authors": [
+        {
+            "name": "Import AI",
+            "role": "Developer"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "ImportAI\\Webhook\\": "src/"
+        }
+    },
+    "extra": {
+        "flarum-extension": {
+            "title": "Post Webhook",
+            "category": "feature",
+            "icon": {
+                "name": "fas fa-paper-plane",
+                "color": "#fff",
+                "backgroundColor": "#4a90d9"
+            }
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

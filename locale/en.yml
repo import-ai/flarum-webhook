@@ -1,0 +1,5 @@
+import-ai-webhook:
+  admin:
+    settings:
+      webhook_url_label: Webhook URL
+      webhook_url_help: Enter the URL to receive POST requests when users create new posts. The payload includes username, create_time, markdown, and title (for new discussions only).
