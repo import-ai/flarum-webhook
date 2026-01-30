@@ -6,12 +6,16 @@
     ],
     "type": "flarum-extension",
     "license": "Apache-2.0",
+    "support": {
+        "source": "https://github.com/import-ai/flarum-webhook"
+    },
     "require": {
         "flarum/core": "^1.2.0"
     },
     "authors": [
         {
             "name": "Import AI",
+            "homepage": "https://github.com/import-ai",
             "role": "Developer"
         }
     ],
