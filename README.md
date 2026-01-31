@@ -79,6 +79,32 @@ The webhook sends a JSON payload with full model data. The payload structure var
 - `discussion.renamed` - Triggered when a discussion title is changed
 - `discussion.deleted` - Triggered when a discussion is deleted
 
+### Identifying Discussion Creation
+
+Flarum Webhook does not have a separate `discussion.created` event. When a new discussion is created, it triggers a `post.created` event for the first post. To identify if a `post.created` event represents a new discussion:
+
+```json
+{
+  "event": "post.created",
+  "post": {
+    "number": 1,           // First post has number = 1
+    "id": 9,
+    // ...
+  },
+  "discussion": {
+    "first_post_id": null,  // null for newly created discussions (or equals post.id)
+    "comment_count": 1,      // Only one comment in the discussion
+    "last_post_id": 9,       // Equals post.id
+    // ...
+  }
+}
+```
+
+**Check conditions**:
+- `post.number === 1` - The post is the first in sequence
+- `discussion.comment_count === 1` - Only one comment exists
+- `discussion.first_post_id === null` OR `discussion.first_post_id === post.id` - For newly created discussions
+
 ### Localization
 
 - `locale/en.yml` - English translations
