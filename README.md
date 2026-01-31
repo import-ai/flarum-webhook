@@ -4,7 +4,7 @@ This file provides guidance to developers when working with code in this reposit
 
 ## Overview
 
-This is a Flarum extension (`import-ai/flarum-webhook`) that triggers HTTP webhooks when users create or edit posts. It sends POST requests with JSON payloads containing full model data.
+This is a Flarum extension (`import-ai/flarum-webhook`) that triggers HTTP webhooks for various forum events including post creation, editing, deletion, and discussion changes. It sends POST requests with JSON payloads containing full model data.
 
 ## Development Commands
 
@@ -26,6 +26,9 @@ npm run build        # Production build
 - **Event listeners**:
   - `src/Listener/PostCreatedListener.php` - Listens to `Flarum\Post\Event\Posted` for new posts
   - `src/Listener/PostRevisedListener.php` - Listens to `Flarum\Post\Event\Revised` for post edits
+  - `src/Listener/PostDeletedListener.php` - Listens to `Flarum\Post\Event\Deleted` for post deletions
+  - `src/Listener/DiscussionRenamedListener.php` - Listens to `Flarum\Discussion\Event\Renamed` for title changes
+  - `src/Listener/DiscussionDeletedListener.php` - Listens to `Flarum\Discussion\Event\Deleted` for discussion deletions
 
 ### Frontend (JavaScript)
 
@@ -37,11 +40,12 @@ npm run build        # Production build
 
 ### Webhook Payload
 
-The webhook sends a JSON payload with full model data:
+The webhook sends a JSON payload with full model data. The payload structure varies by event type:
 
+**Post Events** (`post.created`, `post.revised`, `post.deleted`):
 ```json
 {
-  "event": "post.created | post.revised",
+  "event": "post.created | post.revised | post.deleted",
   "user": { /* full user model attributes */ },
   "post": { /* full post model attributes */ },
   "discussion": { /* full discussion model attributes */ },
@@ -49,9 +53,57 @@ The webhook sends a JSON payload with full model data:
 }
 ```
 
+**Discussion Renamed Event** (`discussion.renamed`):
+```json
+{
+  "event": "discussion.renamed",
+  "discussion": { /* full discussion model attributes */ },
+  "old_title": "Previous discussion title",
+  "actor": { /* full actor model attributes */ }
+}
+```
+
+**Discussion Deleted Event** (`discussion.deleted`):
+```json
+{
+  "event": "discussion.deleted",
+  "discussion": { /* full discussion model attributes */ },
+  "actor": { /* full actor model attributes */ }
+}
+```
+
 **Event Types**:
 - `post.created` - Triggered when a new post is created
 - `post.revised` - Triggered when an existing post is edited
+- `post.deleted` - Triggered when a post is deleted
+- `discussion.renamed` - Triggered when a discussion title is changed
+- `discussion.deleted` - Triggered when a discussion is deleted
+
+### Identifying Discussion Creation
+
+Flarum Webhook does not have a separate `discussion.created` event. When a new discussion is created, it triggers a `post.created` event for the first post. To identify if a `post.created` event represents a new discussion:
+
+```json
+{
+  "event": "post.created",
+  "post": {
+    "number": 1,           // First post has number = 1
+    "id": 9,
+    // ...
+  },
+  "discussion": {
+    "first_post_id": null,  // null for newly created discussions (or equals post.id)
+    "comment_count": 1,      // Only one comment in the discussion
+    "last_post_id": 9,       // Equals post.id
+    // ...
+  }
+}
+```
+
+**Check conditions**:
+- `post.number === 1` - The post is the first in sequence
+- `discussion.comment_count === 1` - Only one comment exists
+- `discussion.first_post_id === null` OR `discussion.first_post_id === post.id` - For newly created discussions
 
 ### Localization
 
