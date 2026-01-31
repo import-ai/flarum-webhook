@@ -1,6 +1,5 @@
 {
     "name": "import-ai/flarum-webhook",
-    "version": "0.1.2",
     "description": "Trigger webhooks when users create new posts",
     "keywords": [
         "flarum"
