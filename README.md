@@ -26,9 +26,11 @@ npm run build        # Production build
 - **Event listeners**:
   - `src/Listener/PostCreatedListener.php` - Listens to `Flarum\Post\Event\Posted` for new posts
   - `src/Listener/PostRevisedListener.php` - Listens to `Flarum\Post\Event\Revised` for post edits
-  - `src/Listener/PostDeletedListener.php` - Listens to `Flarum\Post\Event\Deleted` for post deletions
+  - `src/Listener/PostHiddenListener.php` - Listens to `Flarum\Post\Event\Hidden` for soft-deleted (hidden) posts
+  - `src/Listener/PostDeletedListener.php` - Listens to `Flarum\Post\Event\Deleted` for hard-deleted posts
   - `src/Listener/DiscussionRenamedListener.php` - Listens to `Flarum\Discussion\Event\Renamed` for title changes
-  - `src/Listener/DiscussionDeletedListener.php` - Listens to `Flarum\Discussion\Event\Deleted` for discussion deletions
+  - `src/Listener/DiscussionHiddenListener.php` - Listens to `Flarum\Discussion\Event\Hidden` for soft-deleted (hidden) discussions
+  - `src/Listener/DiscussionDeletedListener.php` - Listens to `Flarum\Discussion\Event\Deleted` for hard-deleted discussions
 
 ### Frontend (JavaScript)
 
@@ -42,10 +44,10 @@ npm run build        # Production build
 
 The webhook sends a JSON payload with full model data. The payload structure varies by event type:
 
-**Post Events** (`post.created`, `post.revised`, `post.deleted`):
+**Post Events** (`post.created`, `post.revised`, `post.hidden`, `post.deleted`):
 ```json
 {
-  "event": "post.created | post.revised | post.deleted",
+  "event": "post.created | post.revised | post.hidden | post.deleted",
   "user": { /* full user model attributes */ },
   "post": { /* full post model attributes */ },
   "discussion": { /* full discussion model attributes */ },
@@ -63,10 +65,10 @@ The webhook sends a JSON payload with full model data. The payload structure var
 }
 ```
 
-**Discussion Deleted Event** (`discussion.deleted`):
+**Discussion Deleted Event** (`discussion.hidden`, `discussion.deleted`):
 ```json
 {
-  "event": "discussion.deleted",
+  "event": "discussion.hidden | discussion.deleted",
   "discussion": { /* full discussion model attributes */ },
   "actor": { /* full actor model attributes */ }
 }
@@ -75,9 +77,11 @@ The webhook sends a JSON payload with full model data. The payload structure var
 **Event Types**:
 - `post.created` - Triggered when a new post is created
 - `post.revised` - Triggered when an existing post is edited
-- `post.deleted` - Triggered when a post is deleted
+- `post.hidden` - Triggered when a post is soft-deleted (hidden) via the UI
+- `post.deleted` - Triggered when a post is permanently (hard) deleted
 - `discussion.renamed` - Triggered when a discussion title is changed
-- `discussion.deleted` - Triggered when a discussion is deleted
+- `discussion.hidden` - Triggered when a discussion is soft-deleted (hidden) via the UI
+- `discussion.deleted` - Triggered when a discussion is permanently (hard) deleted
 
 ### Identifying Discussion Creation
 
